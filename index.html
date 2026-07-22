@@ -1,0 +1,1342 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Painel do Morador — Ed. André Candido II</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#f0f2f8;--bg2:#ffffff;--bg3:#f5f7fc;--bg4:#eaecf4;--bg5:#e2e6f0;
+  --bdr:#dde1ef;--bdr2:#cdd3e8;--bdr3:#b8c0d8;
+  --tx:#1a2040;--tx2:#5a6585;--tx3:#9ba3bf;
+  --grn:#1db86a;--grn2:#e6f8ef;--grn3:#a8e8c8;
+  --red:#f05252;--red2:#fff0f0;--red3:#fac8c8;
+  --blu:#3b82f6;--blu2:#eff6ff;--blu3:#bfdbfe;
+  --amb:#f59e0b;--amb2:#fffbeb;--amb3:#fde68a;
+  --pur:#7c3aed;--pur2:#ede9fe;
+  --acc:#6366f1;--acc2:#4f46e5;
+  --font:'Inter',sans-serif;--mono:'JetBrains Mono',monospace;
+}
+body{background:var(--bg);color:var(--tx);font-family:var(--font);font-size:13px;min-height:100vh}
+
+/* ── LAYOUT ── */
+.layout{display:flex;min-height:100vh}
+.sidebar{width:240px;flex-shrink:0;background:var(--bg2);border-right:1px solid var(--bdr);display:flex;flex-direction:column;position:fixed;top:0;left:0;bottom:0;z-index:20;overflow-y:auto}
+.main{margin-left:240px;flex:1;display:flex;flex-direction:column;min-width:0}
+
+/* ── SIDEBAR ── */
+.sb-logo{padding:20px 18px 16px;border-bottom:1px solid var(--bdr)}
+.sb-logo-mark{width:36px;height:36px;background:var(--acc);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;color:#fff;margin-bottom:10px}
+.sb-logo h1{font-size:14px;font-weight:800;color:#000;line-height:1.2}
+.sb-logo p{font-size:10px;color:var(--tx3);margin-top:2px;font-family:var(--mono)}
+.sb-nav{padding:12px 10px;flex:1}
+.sb-section{font-size:9px;font-weight:600;color:var(--tx3);text-transform:uppercase;letter-spacing:1.2px;padding:10px 8px 6px}
+.nav-item{display:flex;align-items:center;gap:9px;padding:8px 10px;border-radius:8px;cursor:pointer;color:#000;font-size:12px;font-weight:700;transition:all .15s;margin-bottom:2px;border:none;background:none;width:100%;text-align:left}
+.nav-item:hover{background:var(--bg4);color:var(--tx)}
+.nav-item.active{background:var(--acc2);color:#fff}
+.nav-item .ico{width:16px;height:16px;flex-shrink:0;opacity:.7}
+.nav-item.active .ico{opacity:1}
+.sb-kpis{padding:10px 10px 0}
+.sb-kpi{background:var(--bg3);border:1px solid var(--bdr);border-radius:8px;padding:10px 12px;margin-bottom:6px}
+.sb-kpi-lbl{font-size:9px;color:#000;font-weight:700;text-transform:uppercase;letter-spacing:.6px;font-family:var(--mono)}
+.sb-kpi-val{font-size:18px;font-weight:700;font-family:var(--mono);margin-top:3px}
+.sb-kpi-val.g{color:var(--grn)}.sb-kpi-val.r{color:var(--red)}.sb-kpi-val.b{color:var(--blu)}.sb-kpi-val.a{color:var(--amb)}
+.sb-kpi-sub{font-size:9px;color:var(--tx3);margin-top:2px;font-family:var(--mono)}
+.sb-foot{padding:12px 10px;border-top:1px solid var(--bdr);margin-top:auto}
+.conn-status{display:flex;align-items:center;gap:6px;padding:6px 10px;border-radius:7px;background:var(--bg3);border:1px solid var(--bdr);margin-bottom:8px}
+.conn-dot{width:6px;height:6px;border-radius:50%;background:var(--amb);flex-shrink:0;transition:background .3s}
+.conn-dot.ok{background:var(--grn)}.conn-dot.err{background:var(--red)}
+.conn-txt{font-size:10px;color:var(--tx2);font-family:var(--mono)}
+.btn-conn{width:100%;padding:7px;border-radius:7px;background:var(--acc);border:none;color:#fff;font-size:11px;font-weight:600;cursor:pointer;transition:background .15s;font-family:var(--font)}
+.btn-conn:hover{background:var(--acc2)}
+
+/* ── TOPBAR ── */
+.topbar{background:var(--bg2);border-bottom:1px solid var(--bdr);padding:12px 24px;display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;position:sticky;top:0;z-index:10}
+.topbar-left{display:flex;align-items:center;gap:10px}
+.page-title{font-size:15px;font-weight:800;color:#000}
+.page-badge{font-size:10px;padding:3px 9px;border-radius:12px;background:var(--bg4);color:var(--tx2);border:1px solid var(--bdr2);font-family:var(--mono)}
+.topbar-right{display:flex;align-items:center;gap:6px}
+.tbtn{padding:6px 14px;border-radius:7px;font-size:11px;font-weight:600;cursor:pointer;transition:all .15s;font-family:var(--font)}
+.tbtn-ghost{background:transparent;color:var(--tx2);border:1px solid var(--bdr2)}
+.tbtn-ghost:hover{background:var(--bg4);color:var(--tx)}
+.tbtn-primary{background:var(--acc);color:#fff;border:none}
+.tbtn-primary:hover{background:var(--acc2)}
+.tbtn-pdf{background:#dc2626;color:#fff;border:none;display:flex;align-items:center}
+.tbtn-pdf:hover{background:#b91c1c}
+.year-sel{padding:6px 10px;background:var(--bg3);border:1px solid var(--bdr2);border-radius:7px;color:var(--tx);font-size:11px;font-family:var(--mono);cursor:pointer}
+
+/* ── KPI GRID ── */
+.kpi-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;padding:18px 24px 0}
+.kpi{background:var(--bg2);border:1px solid var(--bdr);border-radius:10px;padding:14px 16px;position:relative;overflow:hidden}
+.kpi::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;border-radius:2px 2px 0 0}
+.kpi.g::before{background:var(--grn)}.kpi.r::before{background:var(--red)}.kpi.b::before{background:var(--blu)}.kpi.a::before{background:var(--amb)}
+.kpi-lbl{font-size:9px;color:#000;font-weight:700;text-transform:uppercase;letter-spacing:.6px;font-family:var(--mono);margin-bottom:6px}
+.kpi-val{font-size:20px;font-weight:700;font-family:var(--mono)}
+.kpi.g .kpi-val{color:var(--grn)}.kpi.r .kpi-val{color:var(--red)}.kpi.b .kpi-val{color:var(--blu)}.kpi.a .kpi-val{color:var(--amb)}
+.kpi-sub{font-size:9px;color:var(--tx3);margin-top:4px;font-family:var(--mono)}
+
+/* ── SEÇÕES ── */
+.section{padding:18px 24px}
+.section-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;gap:8px;flex-wrap:wrap}
+.section-title{font-size:13px;font-weight:600;color:var(--tx);display:flex;align-items:center;gap:8px}
+.section-title span{font-size:10px;color:var(--tx3);font-family:var(--mono);font-weight:400}
+
+/* ── MÊS PILLS ── */
+.mes-pills{display:flex;gap:5px;flex-wrap:wrap;padding:0 24px 14px}
+.mes-pill{padding:4px 13px;border-radius:14px;font-size:11px;font-weight:700;border:2px solid #b8860b;background:transparent;color:#000;cursor:pointer;transition:all .12s;font-family:var(--mono)}
+.mes-pill:hover{border-color:#8b6400;background:#fffbeb;color:#000}
+.mes-pill.on{background:var(--acc);color:#fff;border-color:var(--acc)}
+
+/* ── DRE ── */
+.dre-card{background:var(--bg2);border:1px solid var(--bdr);border-radius:10px;overflow:hidden}
+.dre-scroll{overflow-x:auto}
+.dre-tbl{width:100%;border-collapse:collapse;min-width:820px}
+.dre-tbl th{padding:8px 10px;background:var(--bg4);font-size:9px;font-weight:600;color:var(--tx3);text-align:right;border-bottom:1px solid var(--bdr);font-family:var(--mono);letter-spacing:.3px;white-space:nowrap}
+.dre-tbl th:first-child{text-align:left;width:200px;padding-left:16px}
+.dre-tbl td{padding:9px 10px;font-size:11px;text-align:right;border-bottom:1px solid var(--bdr);font-family:var(--mono);color:var(--tx2);white-space:nowrap}
+.dre-tbl td:first-child{text-align:left;padding-left:16px;font-family:var(--font);font-size:12px;color:var(--tx)}
+.dre-tbl tr:last-child td{border-bottom:none}
+.tr-group td{background:var(--bg3);cursor:pointer}
+.tr-group:hover td{background:var(--bg4)}
+.tr-group td:first-child{font-weight:600}
+.tr-group.rec td:first-child{color:var(--grn)}
+.tr-group.df  td:first-child{color:var(--blu)}
+.tr-group.dv  td:first-child{color:var(--amb)}
+.tr-sub td{background:var(--bg);cursor:pointer}
+.tr-sub:hover td{background:var(--bg3)}
+.tr-sub td:first-child{padding-left:32px;font-size:11px;color:var(--tx2)}
+.tr-saldo td{background:var(--bg4);font-weight:600;font-size:12px}
+.tr-saldo td:first-child{font-family:var(--font);font-size:13px;color:var(--tx);font-weight:700}
+.vg{color:var(--grn)!important}.vr{color:var(--red)!important}.vb{color:var(--blu)!important}
+.chv{font-size:8px;display:inline-block;transition:transform .2s;margin-right:6px;color:var(--tx3)}
+.chv.open{transform:rotate(90deg)}
+
+/* ── TABELA LANÇAMENTOS ── */
+.lanc-filters{display:flex;gap:8px;flex-wrap:wrap;align-items:flex-end;padding:0 24px 12px}
+.fg{display:flex;flex-direction:column;gap:3px}
+.fg label{font-size:9px;font-weight:600;color:var(--tx3);text-transform:uppercase;letter-spacing:.5px;font-family:var(--mono)}
+.fg input,.fg select{padding:7px 10px;background:var(--bg3);border:1px solid var(--bdr2);border-radius:7px;color:var(--tx);font-size:12px;font-family:var(--font)}
+.fg input:focus,.fg select:focus{outline:none;border-color:var(--acc)}
+.btn-clr{padding:7px 12px;border-radius:7px;background:transparent;border:1px solid var(--bdr2);color:var(--tx3);cursor:pointer;font-size:11px;align-self:flex-end;font-family:var(--font);transition:all .12s}
+.btn-clr:hover{border-color:var(--red3);color:var(--red)}
+.tbl-card{background:var(--bg2);border:1px solid var(--bdr);border-radius:10px;overflow:hidden}
+.tbl-info{font-size:10px;color:var(--tx3);padding:10px 16px;border-bottom:1px solid var(--bdr);font-family:var(--mono)}
+.lanc-tbl{width:100%;border-collapse:collapse}
+.lanc-tbl th{padding:8px 12px;background:var(--bg4);font-size:9px;font-weight:600;color:var(--tx3);text-align:left;border-bottom:1px solid var(--bdr);font-family:var(--mono);letter-spacing:.3px;text-transform:uppercase;white-space:nowrap}
+.lanc-tbl td{padding:9px 12px;border-bottom:1px solid var(--bdr);vertical-align:middle;font-size:12px;color:var(--tx2)}
+.lanc-tbl tr:last-child td{border-bottom:none}
+.lanc-tbl tbody tr{cursor:pointer;transition:background .1s}
+.lanc-tbl tbody tr:hover td{background:var(--bg3)}
+.td-val-p{color:var(--grn);font-weight:600;font-family:var(--mono)}
+.td-val-n{color:var(--red);font-weight:600;font-family:var(--mono)}
+.td-conta{font-weight:600;color:var(--tx)}
+.badge{display:inline-block;padding:2px 8px;border-radius:8px;font-size:9px;font-weight:600;font-family:var(--mono)}
+.badge.PAGO{background:var(--grn2);color:var(--grn);border:1px solid var(--grn3)}
+.badge.apagar{background:var(--amb2);color:var(--amb);border:1px solid var(--amb3)}
+.estado-tbl{text-align:center;padding:48px 20px;color:var(--tx3);font-size:12px}
+.spin{width:28px;height:28px;border:2px solid var(--bdr2);border-top-color:var(--acc);border-radius:50%;animation:spin .7s linear infinite;margin:0 auto 12px}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ── CHARTS ── */
+.charts-row{display:grid;grid-template-columns:1.5fr 1fr;gap:12px;padding:0 24px 18px}
+.chart-card{background:var(--bg2);border:1px solid var(--bdr);border-radius:10px;padding:16px}
+.chart-hdr{font-size:10px;font-weight:600;color:var(--tx3);text-transform:uppercase;letter-spacing:.5px;font-family:var(--mono);margin-bottom:12px}
+
+/* ── POPUP ── */
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.72);z-index:200;display:none;align-items:center;justify-content:center;padding:20px}
+.overlay.open{display:flex}
+.popup{background:var(--bg2);border:1px solid var(--bdr2);border-radius:14px;width:500px;max-width:100%;max-height:92vh;overflow-y:auto;animation:popIn .2s ease}
+@keyframes popIn{from{transform:scale(.95);opacity:0}to{transform:scale(1);opacity:1}}
+.pop-hdr{display:flex;align-items:center;justify-content:space-between;padding:18px 20px 14px;border-bottom:1px solid var(--bdr);position:sticky;top:0;background:var(--bg2);z-index:1}
+.pop-title{font-size:14px;font-weight:700;color:var(--tx)}
+.pop-cls{width:28px;height:28px;background:var(--bg4);border:1px solid var(--bdr2);border-radius:7px;color:var(--tx2);cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center}
+.pop-body{padding:18px 20px}
+.pop-foot{padding:12px 20px;border-top:1px solid var(--bdr);display:flex;gap:8px;position:sticky;bottom:0;background:var(--bg2)}
+.tipo-row{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:14px}
+.tipo-btn{padding:8px;border-radius:8px;border:1px solid var(--bdr2);background:transparent;color:var(--tx2);cursor:pointer;font-size:12px;font-weight:600;text-align:center;font-family:var(--font);transition:all .12s}
+.tipo-btn.dep{background:var(--red2);color:var(--red);border-color:var(--red3)}
+.tipo-btn.rec{background:var(--grn2);color:var(--grn);border-color:var(--grn3)}
+.pop-fg{margin-bottom:12px}
+.pop-fg label{display:block;font-size:9px;color:var(--tx3);margin-bottom:4px;text-transform:uppercase;letter-spacing:.5px;font-family:var(--mono)}
+.pop-fg input,.pop-fg select{width:100%;padding:8px 10px;border-radius:7px;border:1px solid var(--bdr2);background:var(--bg3);color:var(--tx);font-size:13px;font-family:var(--font)}
+.pop-fg input:focus,.pop-fg select:focus{outline:none;border-color:var(--acc)}
+.form2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.loading-bar{display:flex;align-items:center;gap:8px;padding:10px 12px;background:var(--blu2);border-radius:7px;font-size:11px;color:var(--blu);font-family:var(--mono);margin-bottom:12px}
+.pbtn-c{flex:1;padding:9px;border-radius:7px;border:1px solid var(--bdr2);background:transparent;color:var(--tx2);cursor:pointer;font-size:12px;font-family:var(--font)}
+.pbtn-s{flex:2;padding:9px;border-radius:7px;border:none;background:var(--acc);color:#fff;cursor:pointer;font-size:12px;font-weight:600;font-family:var(--font)}
+.pbtn-s:hover{background:var(--acc2)}
+.confirm-pop{padding:28px 24px;text-align:center}
+.conf-ico{font-size:26px;margin-bottom:10px}
+.conf-msg{font-size:12px;color:var(--tx2);line-height:1.6;margin-bottom:18px;font-family:var(--mono)}
+.pbtn-del{flex:1;padding:9px;border-radius:7px;border:1px solid var(--red3);background:var(--red2);color:var(--red);cursor:pointer;font-size:12px;font-weight:600;font-family:var(--font)}
+
+/* ── TOAST ── */
+.toast{position:fixed;bottom:20px;right:20px;z-index:999;padding:11px 16px;border-radius:9px;font-size:12px;font-family:var(--mono);opacity:0;transform:translateY(8px);transition:all .22s;pointer-events:none}
+.toast.show{opacity:1;transform:translateY(0)}
+.toast.ok{background:var(--grn2);color:var(--grn);border:1px solid var(--grn3)}
+.toast.err{background:var(--red2);color:var(--red);border:1px solid var(--red3)}
+.toast.info{background:var(--blu2);color:var(--blu);border:1px solid var(--blu3)}
+
+/* ── TELA DE SENHA ── */
+#login-screen{position:fixed;inset:0;background:linear-gradient(135deg,#6366f1 0%,#818cf8 50%,#a5b4fc 100%);z-index:9999;display:flex;align-items:center;justify-content:center}
+.login-card{background:#fff;border-radius:20px;padding:40px 36px;width:340px;max-width:90vw;box-shadow:0 24px 64px rgba(99,102,241,.3),0 8px 24px rgba(0,0,0,.1);animation:popIn .3s ease}
+.login-logo{width:52px;height:52px;background:linear-gradient(135deg,#6366f1,#4f46e5);border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:800;color:#fff;margin:0 auto 18px}
+.login-title{text-align:center;font-size:18px;font-weight:700;color:#1a2040;margin-bottom:4px}
+.login-sub{text-align:center;font-size:12px;color:#9ba3bf;margin-bottom:28px;font-family:'JetBrains Mono',monospace}
+.login-label{display:block;font-size:10px;font-weight:600;color:#5a6585;text-transform:uppercase;letter-spacing:.6px;margin-bottom:6px;font-family:'JetBrains Mono',monospace}
+.login-input{width:100%;padding:11px 14px;border-radius:10px;border:1.5px solid #dde1ef;background:#f5f7fc;color:#1a2040;font-size:14px;font-family:'Inter',sans-serif;transition:border-color .15s;margin-bottom:8px}
+.login-input:focus{outline:none;border-color:#6366f1;background:#fff}
+.login-err{font-size:11px;color:#f05252;text-align:center;min-height:16px;margin-bottom:8px;font-family:'JetBrains Mono',monospace}
+.login-btn{width:100%;padding:12px;border-radius:10px;border:none;background:linear-gradient(135deg,#6366f1,#4f46e5);color:#fff;font-size:13px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;transition:opacity .15s;margin-top:4px}
+.login-btn:hover{opacity:.9}
+.login-btn:active{opacity:.8}
+
+/* ── GRUPOS VISUAIS ── */
+.grupos-row{display:flex;gap:6px;flex-wrap:wrap;padding:0 24px 16px}
+.grupo-chip{padding:5px 12px;border-radius:14px;font-size:11px;font-weight:500;border:1px solid var(--bdr2);background:transparent;color:var(--tx3);cursor:pointer;transition:all .12s}
+.grupo-chip:hover{border-color:var(--bdr3);color:var(--tx2)}
+.grupo-chip.on.rec{background:var(--grn2);color:var(--grn);border-color:var(--grn3)}
+.grupo-chip.on.df{background:var(--blu2);color:var(--blu);border-color:var(--blu3)}
+.grupo-chip.on.dv{background:var(--amb2);color:var(--amb);border-color:var(--amb3)}
+
+/* ── DETAIL ROW ── */
+.detalhe-box{background:var(--bg3);border:1px solid var(--bdr);border-radius:8px;padding:14px;margin-bottom:14px}
+.det-row{display:flex;gap:8px;margin-bottom:6px;font-size:12px}
+.det-row:last-child{margin-bottom:0}
+.det-lbl{color:var(--tx3);width:90px;flex-shrink:0;font-family:var(--mono);font-size:11px}
+.det-val{color:var(--tx);font-weight:500}
+
+@media(max-width:860px){.sidebar{display:none}.main{margin-left:0}.kpi-grid{grid-template-columns:1fr 1fr}.charts-row{grid-template-columns:1fr}}
+@media(max-width:500px){.kpi-grid{grid-template-columns:1fr}.lanc-filters{flex-direction:column}}
+</style>
+</head>
+<body>
+
+<!-- TELA DE SENHA -->
+<div id="login-screen">
+  <div class="login-card">
+    <div class="login-logo">CA</div>
+    <div class="login-title">Painel do Morador</div>
+    <div class="login-sub">Ed. André Candido II · Somente visualização</div>
+    <label class="login-label">Senha de acesso</label>
+    <input class="login-input" type="password" id="login-input" placeholder="Digite a senha…" onkeydown="if(event.key==='Enter')verificarSenha()">
+    <div class="login-err" id="login-err"></div>
+    <button class="login-btn" onclick="verificarSenha()">Entrar →</button>
+  </div>
+</div>
+
+<!-- LAYOUT -->
+<div class="layout" id="app-layout" style="display:none">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sb-logo">
+      <div class="sb-logo-mark">CA</div>
+      <h1>Controle ADM</h1>
+      <p>Ed. André Candido II</p>
+    </div>
+
+    <div class="sb-nav">
+      <div class="sb-section">Navegação</div>
+      <button class="nav-item active" onclick="setView('dre')" id="nav-dre">
+        <svg class="ico" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1" y="1" width="14" height="14" rx="2"/><path d="M1 5h14M5 5v10"/></svg>
+        Painel DRE
+      </button>
+      <button class="nav-item" onclick="setView('lanc')" id="nav-lanc">
+        <svg class="ico" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4h12M2 8h8M2 12h10"/></svg>
+        Lançamentos
+      </button>
+
+      <div class="sb-section" style="margin-top:8px">Resumo</div>
+      <div class="sb-kpis" id="sb-kpis">
+        <div class="sb-kpi"><div class="sb-kpi-lbl">Receitas</div><div class="sb-kpi-val g" id="sk-rec">—</div></div>
+        <div class="sb-kpi"><div class="sb-kpi-lbl">Despesas</div><div class="sb-kpi-val r" id="sk-dep">—</div></div>
+        <div class="sb-kpi"><div class="sb-kpi-lbl">Saldo</div><div class="sb-kpi-val b" id="sk-saldo">—</div></div>
+        <div class="sb-kpi"><div class="sb-kpi-lbl">A pagar</div><div class="sb-kpi-val a" id="sk-apagar">—</div></div>
+      </div>
+    </div>
+
+    <div class="sb-foot">
+      <div class="conn-status">
+        <div class="conn-dot" id="conn-dot"></div>
+        <span class="conn-txt" id="conn-txt">Conectando…</span>
+      </div>
+      <button class="btn-conn" onclick="carregarTudo()">↻ Recarregar dados</button>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <div class="main">
+
+    <!-- TOPBAR -->
+    <div class="topbar">
+      <div class="topbar-left">
+        <span class="page-title" id="page-title">Painel DRE</span>
+        <span class="page-badge" id="page-badge">2025</span>
+      </div>
+      <div class="topbar-right">
+        <select class="year-sel" id="anoSel" onchange="carregarTudo()">
+          <option value="2024">2024</option>
+          <option value="2025" selected>2025</option>
+          <option value="2026">2026</option>
+        </select>
+        <button class="tbtn tbtn-ghost" onclick="carregarTudo()">↻ Atualizar</button>
+        <button class="tbtn tbtn-pdf" onclick="gerarRelatorioPDF()" id="btn-pdf" title="Gerar relatório analítico em PDF">
+          <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" style="vertical-align:middle;margin-right:4px"><path d="M9 1H3a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V6L9 1z"/><path d="M9 1v5h5"/><path d="M5 9h6M5 11.5h4"/></svg>
+          Relatório PDF
+        </button>
+      </div>
+    </div>
+
+    <!-- VIEW: DRE -->
+    <div id="view-dre">
+      <!-- KPIs -->
+      <div class="kpi-grid" id="kpi-grid">
+        <div class="kpi g"><div class="kpi-lbl">Receitas</div><div class="kpi-val" id="kv-rec">—</div><div class="kpi-sub" id="ks-rec">0 lançamentos</div></div>
+        <div class="kpi r"><div class="kpi-lbl">Despesas</div><div class="kpi-val" id="kv-dep">—</div><div class="kpi-sub" id="ks-dep">0 lançamentos</div></div>
+        <div class="kpi b"><div class="kpi-lbl">Saldo do período</div><div class="kpi-val" id="kv-saldo">—</div><div class="kpi-sub" id="ks-saldo">—</div></div>
+        <div class="kpi a"><div class="kpi-lbl">A pagar</div><div class="kpi-val" id="kv-apagar">—</div><div class="kpi-sub" id="ks-apagar">0 pendentes</div></div>
+      </div>
+
+      <!-- MÊS FILTER -->
+      <div class="mes-pills" id="mes-pills" style="margin-top:14px"></div>
+
+      <!-- CHARTS -->
+      <div class="charts-row">
+        <div class="chart-card">
+          <div class="chart-hdr">Receitas vs Despesas — mensal</div>
+          <div style="position:relative;height:180px"><canvas id="cbar"></canvas></div>
+        </div>
+        <div class="chart-card">
+          <div class="chart-hdr">Saldo acumulado</div>
+          <div style="position:relative;height:180px"><canvas id="cline"></canvas></div>
+        </div>
+      </div>
+
+      <!-- DRE TABLE -->
+      <div class="section">
+        <div class="section-hdr">
+          <div class="section-title">DRE — Demonstrativo de Resultado <span id="dre-periodo"></span></div>
+        </div>
+        <div class="dre-card">
+          <div class="dre-scroll">
+            <table class="dre-tbl">
+              <thead id="dre-head"></thead>
+              <tbody id="dre-body"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- VIEW: LANÇAMENTOS -->
+    <div id="view-lanc" style="display:none">
+      <div class="section" style="padding-bottom:12px">
+        <div class="section-hdr">
+          <div class="section-title">Todos os lançamentos</div>
+        </div>
+      </div>
+
+      <!-- FILTROS -->
+      <div class="lanc-filters">
+        <div class="fg">
+          <label>Buscar</label>
+          <input type="text" id="f-busca" placeholder="conta, detalhe…" oninput="filtrarLanc()">
+        </div>
+        <div class="fg">
+          <label>Grupo</label>
+          <select id="f-grupo" onchange="filtrarLanc()">
+            <option value="">Todos</option>
+          </select>
+        </div>
+        <div class="fg">
+          <label>Mês</label>
+          <select id="f-mes" onchange="filtrarLanc()">
+            <option value="">Todos</option>
+          </select>
+        </div>
+        <div class="fg">
+          <label>Status</label>
+          <select id="f-status" onchange="filtrarLanc()">
+            <option value="">Todos</option>
+            <option value="PAGO">Pago</option>
+            <option value="A PAGAR">A pagar</option>
+          </select>
+        </div>
+        <button class="btn-clr" onclick="limparFiltros()">✕ Limpar</button>
+      </div>
+
+      <div class="section" style="padding-top:0">
+        <div class="tbl-card">
+          <div class="tbl-info" id="lanc-info">0 registros</div>
+          <div id="tbl-estado" class="estado-tbl"><div class="spin"></div><p>Carregando…</p></div>
+          <table class="lanc-tbl" id="lanc-tbl" style="display:none">
+            <thead>
+              <tr>
+                <th>Data</th><th>Mês</th><th>Conta</th><th>Grupo</th>
+                <th>Detalhe</th><th style="text-align:right">Valor</th><th>Status</th>
+              </tr>
+            </thead>
+            <tbody id="lanc-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+</div><!-- /app-layout -->
+
+<!-- OVERLAY POPUP -->
+<div class="overlay" id="overlay" onclick="fecharSeOverlay(event)">
+  <div class="popup" id="popup-content" onclick="event.stopPropagation()"></div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
+<script>
+// ═══════════════════════════════════════════════════════
+// SENHA DE ACESSO
+// ═══════════════════════════════════════════════════════
+const SENHA_ACESSO = 'morador2026'; // ← altere aqui a senha para os moradores
+
+function verificarSenha() {
+  const input = document.getElementById('login-input').value;
+  const errEl = document.getElementById('login-err');
+  if (input === SENHA_ACESSO) {
+    document.getElementById('login-screen').style.display = 'none';
+    document.getElementById('app-layout').style.display = 'flex';
+    conectar();
+  } else {
+    errEl.textContent = 'Senha incorreta. Tente novamente.';
+    document.getElementById('login-input').value = '';
+    document.getElementById('login-input').focus();
+    setTimeout(() => { errEl.textContent = ''; }, 2500);
+  }
+}
+
+// ═══════════════════════════════════════════════════════
+// ESTADO GLOBAL
+// ═══════════════════════════════════════════════════════
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbybVXRpMrKXEh5bu5VJe1dk7d67VtrQ6zal03iTyix7PoTcHH-T7aNWnHmx3c6tPcVN0w/exec';
+let lancamentos = [];   // todos os lançamentos carregados
+let catContas   = [];   // { conta, grupo }
+let catGrupos   = [];   // string[]
+let catMeses    = [];   // string[]  ex: ["JANEIRO","FEVEREIRO"…]
+let filtrado    = [];
+let mesSel      = '';   // '' = todos
+let editId      = null;
+let deleteId    = null;
+let tipoForm    = 'despesa';
+let cbar = null, cline = null;
+let viewAtual   = 'dre';
+
+const MESES_ORD = ['JANEIRO','FEVEREIRO','MARÇO','ABRIL','MAIO','JUNHO',
+                   'JULHO','AGOSTO','SETEMBRO','OUTUBRO','NOVEMBRO','DEZEMBRO'];
+
+// Grupos reconhecidos como RECEITA (case-insensitive contains)
+const isGrupoReceita = g => /receita/i.test(g);
+
+// ═══════════════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════════════
+window.onload = function() {
+  document.getElementById('anoSel').value = new Date().getFullYear();
+  document.getElementById('login-input').focus();
+};
+
+function salvarUrl() { /* URL fixa no código */ }
+
+function setView(v) {
+  viewAtual = v;
+  document.getElementById('view-dre').style.display  = v === 'dre'  ? '' : 'none';
+  document.getElementById('view-lanc').style.display = v === 'lanc' ? '' : 'none';
+  document.getElementById('nav-dre').classList.toggle('active', v === 'dre');
+  document.getElementById('nav-lanc').classList.toggle('active', v === 'lanc');
+  document.getElementById('page-title').textContent = v === 'dre' ? 'Painel DRE' : 'Lançamentos';
+  if (v === 'lanc') renderTabelaLanc();
+}
+
+// ═══════════════════════════════════════════════════════
+// API — POST form-urlencoded
+// ═══════════════════════════════════════════════════════
+const ACOES_BLOQUEADAS = ['adicionar', 'editar', 'excluir'];
+async function api(params) {
+  if (ACOES_BLOQUEADAS.includes(params.acao)) {
+    throw new Error('Modo somente visualização: edição desativada');
+  }
+  if (!SCRIPT_URL) throw new Error('URL não configurada');
+  const body = Object.entries(params)
+    .map(([k,v]) => encodeURIComponent(k) + '=' + encodeURIComponent(v ?? ''))
+    .join('&');
+  const res  = await fetch(SCRIPT_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body,
+    redirect: 'follow'
+  });
+  const text = await res.text();
+  let json;
+  try { json = JSON.parse(text); }
+  catch(e) { throw new Error('Resposta inválida: ' + text.slice(0,150)); }
+  if (!json.ok) throw new Error(json.erro || 'Erro no script');
+  return json.dados;
+}
+
+// ═══════════════════════════════════════════════════════
+// CONEXÃO
+// ═══════════════════════════════════════════════════════
+async function conectar() {
+  setConn('wait');
+  try {
+    await api({ acao: 'ping' });
+    await carregarCatalogo();
+    await carregarLancamentos();
+    setConn('ok');
+    toast('Conectado ao Google Sheets ✓', 'ok');
+  } catch(e) {
+    setConn('err');
+    toast('Erro: ' + e.message, 'err');
+  }
+}
+
+function setConn(s) {
+  const dot = document.getElementById('conn-dot');
+  const txt = document.getElementById('conn-txt');
+  dot.className = 'conn-dot' + (s==='ok' ? ' ok' : s==='err' ? ' err' : '');
+  txt.textContent = s==='ok' ? 'Conectado · Sheets' : s==='err' ? 'Erro de conexão' : 'Conectando…';
+}
+
+async function carregarTudo() {
+  if (!SCRIPT_URL) { toast('Configure a URL do Apps Script', 'err'); return; }
+  setConn('wait');
+  try {
+    await carregarCatalogo();
+    await carregarLancamentos();
+    setConn('ok');
+  } catch(e) {
+    setConn('err');
+    toast('Erro: ' + e.message, 'err');
+  }
+}
+
+// ═══════════════════════════════════════════════════════
+// CARREGAR CATÁLOGO (Códigos Contas)
+// ═══════════════════════════════════════════════════════
+async function carregarCatalogo() {
+  const d  = await api({ acao: 'listar_contas' });
+  catContas = d.contas  || [];
+  catGrupos = d.grupos  || [];
+  catMeses  = d.meses   || [];
+
+  // Ordena meses conforme ordem natural
+  catMeses.sort((a,b) => {
+    const ia = MESES_ORD.indexOf(a.toUpperCase());
+    const ib = MESES_ORD.indexOf(b.toUpperCase());
+    return (ia===-1?99:ia) - (ib===-1?99:ib);
+  });
+
+  // Popula selects de filtro
+  const sel = document.getElementById('f-grupo');
+  sel.innerHTML = '<option value="">Todos os grupos</option>' +
+    catGrupos.map(g => `<option value="${g}">${g}</option>`).join('');
+
+  const selM = document.getElementById('f-mes');
+  selM.innerHTML = '<option value="">Todos os meses</option>' +
+    catMeses.map(m => `<option value="${m}">${m}</option>`).join('');
+}
+
+// ═══════════════════════════════════════════════════════
+// CARREGAR LANÇAMENTOS
+// ═══════════════════════════════════════════════════════
+async function carregarLancamentos() {
+  const ano = document.getElementById('anoSel').value;
+  document.getElementById('page-badge').textContent = ano;
+  lancamentos = await api({ acao: 'listar_lancamentos', ano });
+  filtrado = [...lancamentos];
+  renderTudo();
+}
+
+// ═══════════════════════════════════════════════════════
+// RENDER GERAL
+// ═══════════════════════════════════════════════════════
+function renderTudo() {
+  renderKPIs();
+  renderMesPills();
+  renderDRE();
+  renderCharts();
+  renderSidebar();
+  if (viewAtual === 'lanc') renderTabelaLanc();
+}
+
+// ═══════════════════════════════════════════════════════
+// HELPERS
+// ═══════════════════════════════════════════════════════
+const fmtR = v => 'R$ ' + Math.abs(v).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});
+const fmtS = v => (v < 0 ? '-' : '') + fmtR(v);
+
+function getVal(grupo, conta, mes) {
+  return lancamentos.filter(l =>
+    l.grupo === grupo &&
+    (!conta || l.conta === conta) &&
+    (!mes   || l.mes.toUpperCase() === mes.toUpperCase())
+  ).reduce((a,l) => a + l.valor, 0);
+}
+
+function getMesesAtivos() {
+  // Meses que têm lançamentos no ano carregado
+  const set = new Set(lancamentos.map(l => l.mes.toUpperCase()));
+  return catMeses.length
+    ? catMeses.filter(m => set.has(m.toUpperCase()))
+    : MESES_ORD.filter(m => set.has(m));
+}
+
+function gruposRec() { return catGrupos.filter(g => isGrupoReceita(g)); }
+function gruposDep() { return catGrupos.filter(g => !isGrupoReceita(g)); }
+
+// ═══════════════════════════════════════════════════════
+// KPIs
+// ═══════════════════════════════════════════════════════
+function renderKPIs() {
+  const meses = mesSel ? [mesSel] : getMesesAtivos();
+  const gRec  = gruposRec();
+  const gDep  = gruposDep();
+
+  let totRec = 0, totDep = 0;
+  meses.forEach(m => {
+    gRec.forEach(g => totRec += getVal(g, null, m));
+    gDep.forEach(g => totDep += getVal(g, null, m));
+  });
+  const aPagar = lancamentos
+    .filter(l => l.status === 'A PAGAR' && (!mesSel || l.mes.toUpperCase() === mesSel))
+    .reduce((a,l) => a + l.valor, 0);
+  const saldo = totRec - totDep;
+
+  document.getElementById('kv-rec').textContent    = fmtR(totRec);
+  document.getElementById('ks-rec').textContent    = lancamentos.filter(l=>gRec.includes(l.grupo)).length + ' lançamentos';
+  document.getElementById('kv-dep').textContent    = fmtR(totDep);
+  document.getElementById('ks-dep').textContent    = lancamentos.filter(l=>gDep.includes(l.grupo)).length + ' lançamentos';
+  document.getElementById('kv-saldo').textContent  = fmtS(saldo);
+  document.getElementById('ks-saldo').textContent  = saldo >= 0 ? 'Positivo' : 'Atenção: negativo';
+  document.getElementById('kv-apagar').textContent = fmtR(aPagar);
+  document.getElementById('ks-apagar').textContent = lancamentos.filter(l=>l.status==='A PAGAR').length + ' pendentes';
+
+  document.getElementById('kv-saldo').closest('.kpi').className = 'kpi ' + (saldo >= 0 ? 'g' : 'r');
+}
+
+function renderSidebar() {
+  const meses = getMesesAtivos();
+  const gRec = gruposRec(), gDep = gruposDep();
+  let r=0,d=0;
+  meses.forEach(m => {
+    gRec.forEach(g => r += getVal(g,null,m));
+    gDep.forEach(g => d += getVal(g,null,m));
+  });
+  const aPagar = lancamentos.filter(l=>l.status==='A PAGAR').reduce((a,l)=>a+l.valor,0);
+  document.getElementById('sk-rec').textContent    = fmtR(r);
+  document.getElementById('sk-dep').textContent    = fmtR(d);
+  document.getElementById('sk-saldo').textContent  = fmtS(r-d);
+  document.getElementById('sk-apagar').textContent = fmtR(aPagar);
+}
+
+// ═══════════════════════════════════════════════════════
+// PILLS DE MÊS
+// ═══════════════════════════════════════════════════════
+function renderMesPills() {
+  const meses = getMesesAtivos();
+  const el = document.getElementById('mes-pills');
+  el.innerHTML = `<span class="mes-pill ${!mesSel?'on':''}" onclick="setMes('')">Todos</span>` +
+    meses.map(m => `<span class="mes-pill ${mesSel===m.toUpperCase()?'on':''}" onclick="setMes('${m.toUpperCase()}')">${m.slice(0,3)}</span>`).join('');
+}
+
+function setMes(m) {
+  mesSel = m;
+  renderMesPills();
+  renderKPIs();
+  renderDRE();
+  renderCharts();
+}
+
+// ═══════════════════════════════════════════════════════
+// DRE TABLE
+// ═══════════════════════════════════════════════════════
+let openGrp = {};
+
+function renderDRE() {
+  const meses = mesSel ? [mesSel] : getMesesAtivos();
+  document.getElementById('dre-periodo').textContent = mesSel ? '· ' + mesSel : '';
+
+  // HEAD
+  let head = '<tr><th>Descrição</th>' + meses.map(m => `<th>${m.slice(0,3)}</th>`).join('') + '</tr>';
+  document.getElementById('dre-head').innerHTML = head;
+
+  if (!catGrupos.length) {
+    document.getElementById('dre-body').innerHTML =
+      `<tr><td colspan="${meses.length+1}" style="padding:30px;text-align:center;color:var(--tx3)">Conecte ao Google Sheets para visualizar os dados</td></tr>`;
+    return;
+  }
+
+  let body = '';
+
+  // Receitas
+  gruposRec().forEach(g => {
+    const tots = meses.map(m => getVal(g, null, m));
+    const open = openGrp[g];
+    const contas = [...new Set(lancamentos.filter(l => l.grupo===g).map(l => l.conta))];
+    body += `<tr class="tr-group rec" onclick="toggleGrp('${esc(g)}')">
+      <td><span class="chv ${open?'open':''}">▶</span>${g}</td>
+      ${tots.map(v => `<td class="vg">${v ? fmtR(v) : '—'}</td>`).join('')}
+    </tr>`;
+    if (open) {
+      contas.forEach(c => {
+        const vals = meses.map(m => getVal(g, c, m));
+        body += `<tr class="tr-sub" onclick="abrirDetalheConta('${esc(g)}','${esc(c)}')">
+          <td>${c}</td>
+          ${vals.map(v => `<td>${v ? fmtR(v) : '—'}</td>`).join('')}
+        </tr>`;
+      });
+    }
+  });
+
+  // Despesas Fixas (grupos que não são receita, sem "variavel"/"variável")
+  const depFixa = gruposDep().filter(g => !/vari[aá]/i.test(g));
+  const depVar  = gruposDep().filter(g => /vari[aá]/i.test(g));
+
+  [depFixa, depVar].forEach((lista, idx) => {
+    lista.forEach(g => {
+      const tots = meses.map(m => getVal(g, null, m));
+      const open = openGrp[g];
+      const contas = [...new Set(lancamentos.filter(l => l.grupo===g).map(l => l.conta))];
+      const cls = idx === 0 ? 'df' : 'dv';
+      body += `<tr class="tr-group ${cls}" onclick="toggleGrp('${esc(g)}')">
+        <td><span class="chv ${open?'open':''}">▶</span>${g}</td>
+        ${tots.map(v => `<td class="vr">${v ? fmtR(v) : '—'}</td>`).join('')}
+      </tr>`;
+      if (open) {
+        contas.forEach(c => {
+          const vals = meses.map(m => getVal(g, c, m));
+          body += `<tr class="tr-sub" onclick="abrirDetalheConta('${esc(g)}','${esc(c)}')">
+            <td>${c}</td>
+            ${vals.map(v => `<td>${v ? fmtR(v) : '—'}</td>`).join('')}
+          </tr>`;
+        });
+      }
+    });
+  });
+
+  // Saldo líquido
+  const saldos = meses.map(m => {
+    const r = gruposRec().reduce((a,g) => a + getVal(g,null,m), 0);
+    const d = gruposDep().reduce((a,g) => a + getVal(g,null,m), 0);
+    return r - d;
+  });
+  body += `<tr class="tr-saldo"><td>Saldo Líquido</td>
+    ${saldos.map(v => `<td class="${v>=0?'vg':'vr'}">${fmtS(v)}</td>`).join('')}
+  </tr>`;
+
+  document.getElementById('dre-body').innerHTML = body;
+}
+
+function esc(s) { return s.replace(/'/g, "\\'"); }
+function toggleGrp(g) { openGrp[g] = !openGrp[g]; renderDRE(); }
+
+// ═══════════════════════════════════════════════════════
+// CHARTS
+// ═══════════════════════════════════════════════════════
+function renderCharts() {
+  const meses = getMesesAtivos();
+  const gRec = gruposRec(), gDep = gruposDep();
+  const recs = meses.map(m => gRec.reduce((a,g) => a+getVal(g,null,m), 0));
+  const deps = meses.map(m => gDep.reduce((a,g) => a+getVal(g,null,m), 0));
+  let acc = 0;
+  const sals = meses.map((_,i) => { acc += recs[i]-deps[i]; return acc; });
+
+  if (cbar) cbar.destroy();
+  cbar = new Chart(document.getElementById('cbar'), {
+    type: 'bar',
+    data: {
+      labels: meses.map(m => m.slice(0,3)),
+      datasets: [
+        { label:'Receitas', data:recs, backgroundColor:'#1a7a45', borderRadius:3, barPercentage:.45 },
+        { label:'Despesas', data:deps, backgroundColor:'#7a2020', borderRadius:3, barPercentage:.45 }
+      ]
+    },
+    options: {
+      responsive:true, maintainAspectRatio:false,
+      plugins:{ legend:{display:false}, tooltip:{ callbacks:{ label:ctx=>fmtR(ctx.raw) } } },
+      scales:{
+        x:{ grid:{color:'rgba(255,255,255,.03)'}, ticks:{color:'#3d5070',font:{size:9}} },
+        y:{ grid:{color:'rgba(255,255,255,.03)'}, ticks:{color:'#3d5070',font:{size:9}, callback:v=>v?'R$'+Math.round(v/1000)+'k':''} }
+      }
+    }
+  });
+
+  if (cline) cline.destroy();
+  cline = new Chart(document.getElementById('cline'), {
+    type: 'line',
+    data: {
+      labels: meses.map(m => m.slice(0,3)),
+      datasets: [{ label:'Saldo', data:sals, borderColor:'#4f8ef7', backgroundColor:'rgba(79,142,247,.07)',
+        pointBackgroundColor:'#4f8ef7', pointRadius:3, tension:.35, fill:true, borderWidth:2 }]
+    },
+    options: {
+      responsive:true, maintainAspectRatio:false,
+      plugins:{ legend:{display:false}, tooltip:{ callbacks:{ label:ctx=>fmtS(ctx.raw) } } },
+      scales:{
+        x:{ grid:{color:'rgba(255,255,255,.03)'}, ticks:{color:'#3d5070',font:{size:9}} },
+        y:{ grid:{color:'rgba(255,255,255,.03)'}, ticks:{color:'#3d5070',font:{size:9}, callback:v=>v?'R$'+Math.round(v/1000)+'k':''} }
+      }
+    }
+  });
+}
+
+// ═══════════════════════════════════════════════════════
+// TABELA DE LANÇAMENTOS
+// ═══════════════════════════════════════════════════════
+function filtrarLanc() {
+  const busca  = document.getElementById('f-busca').value.trim().toLowerCase();
+  const grupo  = document.getElementById('f-grupo').value;
+  const mes    = document.getElementById('f-mes').value;
+  const status = document.getElementById('f-status').value;
+
+  filtrado = lancamentos.filter(l => {
+    if (busca  && !l.conta.toLowerCase().includes(busca) && !l.detalhe.toLowerCase().includes(busca)) return false;
+    if (grupo  && l.grupo  !== grupo)                 return false;
+    if (mes    && l.mes.toUpperCase() !== mes.toUpperCase()) return false;
+    if (status && l.status !== status)                return false;
+    return true;
+  });
+  renderTabelaLanc();
+}
+
+function limparFiltros() {
+  ['f-busca','f-grupo','f-mes','f-status'].forEach(id => {
+    const el = document.getElementById(id);
+    el.value = '';
+  });
+  filtrado = [...lancamentos];
+  renderTabelaLanc();
+}
+
+function renderTabelaLanc() {
+  const tbody = document.getElementById('lanc-tbody');
+  const info  = document.getElementById('lanc-info');
+  const tbl   = document.getElementById('lanc-tbl');
+  const est   = document.getElementById('tbl-estado');
+
+  if (!lancamentos.length) {
+    est.innerHTML = '<div class="spin"></div><p>Carregando…</p>';
+    est.style.display = 'block'; tbl.style.display = 'none'; return;
+  }
+
+  const lista = filtrado.length ? filtrado : lancamentos;
+  info.textContent = lista.length + ' de ' + lancamentos.length + ' registros';
+
+  tbody.innerHTML = lista.map(l => {
+    const isRec = isGrupoReceita(l.grupo);
+    return `<tr onclick="abrirDetalheRow('${l.id}')">
+      <td style="font-family:var(--mono);color:var(--tx3)">${l.data || '—'}</td>
+      <td style="font-family:var(--mono);color:var(--tx3)">${l.mes}</td>
+      <td class="td-conta">${l.conta}</td>
+      <td><span style="font-size:10px;color:var(--tx3)">${l.grupo}</span></td>
+      <td style="color:var(--tx2)">${l.detalhe || '—'}</td>
+      <td class="${isRec?'td-val-p':'td-val-n'}" style="text-align:right">${isRec?'+':'-'}${fmtR(l.valor)}</td>
+      <td><span class="badge ${l.status==='PAGO'?'PAGO':'apagar'}">${l.status}</span></td>
+    </tr>`;
+  }).join('');
+
+  est.style.display = 'none'; tbl.style.display = 'table';
+}
+
+// ═══════════════════════════════════════════════════════
+// POPUP — NOVO / EDITAR LANÇAMENTO
+// ═══════════════════════════════════════════════════════
+function abrirPopup(id) {
+  editId = id;
+  const d = id ? lancamentos.find(l => l.id === id) : null;
+  tipoForm = d ? (isGrupoReceita(d.grupo) ? 'receita' : 'despesa') : 'despesa';
+
+  const gruposFilt = () => tipoForm === 'receita' ? gruposRec() : gruposDep();
+  const grpAtual   = d?.grupo || gruposFilt()[0] || '';
+  const contasFilt = catContas.filter(c => c.grupo === grpAtual);
+  const anoAtual   = document.getElementById('anoSel').value;
+  const mesAtual   = d?.mes || (catMeses[0] || 'JANEIRO');
+
+  document.getElementById('popup-content').innerHTML = `
+    <div class="pop-hdr">
+      <span class="pop-title">${id ? 'Editar lançamento' : 'Novo lançamento'}</span>
+      <button class="pop-cls" onclick="fecharPopup()">✕</button>
+    </div>
+    <div class="pop-body">
+      <div id="pop-loading" style="display:none" class="loading-bar"><div class="spin" style="width:12px;height:12px;border-width:2px"></div>Gravando no Google Sheets…</div>
+      <div class="tipo-row">
+        <div id="tb-dep" class="tipo-btn ${tipoForm==='despesa'?'dep':''}" onclick="setTipo('despesa')">Despesa</div>
+        <div id="tb-rec" class="tipo-btn ${tipoForm==='receita'?'rec':''}" onclick="setTipo('receita')">Receita</div>
+      </div>
+      <div class="form2">
+        <div class="pop-fg"><label>Grupo</label>
+          <select id="f-grp" onchange="atualizarContasPopup()">
+            ${gruposFilt().map(g=>`<option value="${g}" ${g===grpAtual?'selected':''}>${g}</option>`).join('')}
+          </select>
+        </div>
+        <div class="pop-fg"><label>Conta</label>
+          <select id="f-conta">
+            ${contasFilt.map(c=>`<option value="${c.conta}" ${d&&d.conta===c.conta?'selected':''}>${c.conta}</option>`).join('')}
+          </select>
+        </div>
+      </div>
+      <div class="pop-fg"><label>Detalhe / Descrição</label>
+        <input type="text" id="f-detalhe" value="${d?.detalhe||''}" placeholder="Ex: Pagamento Equatorial Jan/2025">
+      </div>
+      <div class="form2">
+        <div class="pop-fg"><label>Valor (R$)</label>
+          <input type="number" id="f-valor" value="${d?.valor||''}" placeholder="0,00" step="0.01" min="0">
+        </div>
+        <div class="pop-fg"><label>Data</label>
+          <input type="date" id="f-data" value="${d?.data ? d.data.split('/').reverse().join('-') : new Date().toISOString().split('T')[0]}">
+        </div>
+      </div>
+      <div class="form2">
+        <div class="pop-fg"><label>Mês de referência</label>
+          <select id="f-mes-lanc">
+            ${(catMeses.length ? catMeses : MESES_ORD).map(m=>`<option value="${m.toUpperCase()}" ${m.toUpperCase()===mesAtual.toUpperCase()?'selected':''}>${m}</option>`).join('')}
+          </select>
+        </div>
+        <div class="pop-fg"><label>Status</label>
+          <select id="f-status-lanc">
+            <option value="PAGO" ${!d||d.status==='PAGO'?'selected':''}>Pago</option>
+            <option value="A PAGAR" ${d&&d.status==='A PAGAR'?'selected':''}>A pagar</option>
+          </select>
+        </div>
+      </div>
+    </div>
+    <div class="pop-foot">
+      <button class="pbtn-c" onclick="fecharPopup()">Cancelar</button>
+      <button class="pbtn-s" onclick="salvar()">${id ? 'Salvar alterações' : 'Gravar no Sheets'}</button>
+    </div>`;
+
+  document.getElementById('overlay').classList.add('open');
+}
+
+function setTipo(t) {
+  tipoForm = t;
+  document.getElementById('tb-dep').className = 'tipo-btn' + (t==='despesa'?' dep':'');
+  document.getElementById('tb-rec').className = 'tipo-btn' + (t==='receita'?' rec':'');
+  const el = document.getElementById('f-grp');
+  if (el) {
+    const lista = t==='receita' ? gruposRec() : gruposDep();
+    el.innerHTML = lista.map(g=>`<option value="${g}">${g}</option>`).join('');
+    atualizarContasPopup();
+  }
+}
+
+function atualizarContasPopup() {
+  const grpId = document.getElementById('f-grp')?.value;
+  const el = document.getElementById('f-conta');
+  if (el) el.innerHTML = catContas.filter(c=>c.grupo===grpId).map(c=>`<option value="${c.conta}">${c.conta}</option>`).join('');
+}
+
+function fecharPopup() { document.getElementById('overlay').classList.remove('open'); editId = null; }
+function fecharSeOverlay(e) { if (e.target===document.getElementById('overlay')) fecharPopup(); }
+
+async function salvar() {
+  const grp    = document.getElementById('f-grp')?.value;
+  const conta  = document.getElementById('f-conta')?.value;
+  const detalhe= document.getElementById('f-detalhe')?.value.trim();
+  const valor  = parseFloat(document.getElementById('f-valor')?.value);
+  const data   = document.getElementById('f-data')?.value;
+  const mes    = document.getElementById('f-mes-lanc')?.value;
+  const status = document.getElementById('f-status-lanc')?.value;
+
+  if (!valor || isNaN(valor) || valor <= 0) { toast('Informe um valor válido', 'err'); return; }
+  if (!conta) { toast('Selecione a conta', 'err'); return; }
+  if (!SCRIPT_URL) { toast('Configure a URL do Apps Script', 'err'); return; }
+
+  const ld = document.getElementById('pop-loading');
+  if (ld) ld.style.display = 'flex';
+
+  try {
+    if (editId) {
+      await api({ acao:'editar', id:editId, grupo:grp, conta, detalhe, valor, data, mes, status });
+      toast('Lançamento atualizado no Sheets ✓', 'ok');
+    } else {
+      await api({ acao:'adicionar', grupo:grp, conta, detalhe, valor, data, mes, status });
+      toast('Lançamento gravado no Sheets ✓', 'ok');
+    }
+    fecharPopup();
+    await carregarLancamentos();
+  } catch(e) {
+    toast('Erro: ' + e.message, 'err');
+  } finally {
+    if (ld) ld.style.display = 'none';
+  }
+}
+
+// ═══════════════════════════════════════════════════════
+// DETALHE DE CONTA (clique na linha do DRE)
+// ═══════════════════════════════════════════════════════
+function abrirDetalheConta(grupo, conta) {
+  const items = lancamentos.filter(l => l.grupo===grupo && l.conta===conta);
+  const total = items.reduce((a,l)=>a+l.valor,0);
+  const isRec = isGrupoReceita(grupo);
+
+  const rows = items.length
+    ? items.map(l=>`<tr style="border-bottom:1px solid var(--bdr)">
+        <td style="padding:8px 10px;font-family:var(--mono);font-size:11px;color:var(--tx3)">${l.mes}</td>
+        <td style="padding:8px 10px;color:var(--tx2);font-size:12px">${l.detalhe||'—'}</td>
+        <td style="padding:8px 10px;text-align:right;font-family:var(--mono);font-size:12px" class="${isRec?'vg':'vr'}">${isRec?'+':'-'}${fmtR(l.valor)}</td>
+        <td style="padding:8px 10px"><span class="badge ${l.status==='PAGO'?'PAGO':'apagar'}">${l.status}</span></td>
+      </tr>`).join('')
+    : `<tr><td colspan="4" style="padding:24px;text-align:center;color:var(--tx3);font-size:12px">Nenhum lançamento</td></tr>`;
+
+  document.getElementById('popup-content').innerHTML = `
+    <div class="pop-hdr">
+      <div>
+        <div class="pop-title">${conta}</div>
+        <div style="font-size:10px;color:var(--tx3);font-family:var(--mono);margin-top:2px">
+          ${grupo} · Total: ${fmtR(total)} · ${items.length} lançamentos
+        </div>
+      </div>
+      <div style="display:flex;gap:6px">
+        <button class="pop-cls" onclick="fecharPopup()">✕</button>
+      </div>
+    </div>
+    <div style="overflow-x:auto">
+      <table style="width:100%;border-collapse:collapse">
+        <thead><tr style="background:var(--bg4)">
+          <th style="padding:7px 10px;text-align:left;font-size:9px;color:var(--tx3);font-family:var(--mono);text-transform:uppercase">Mês</th>
+          <th style="padding:7px 10px;text-align:left;font-size:9px;color:var(--tx3);font-family:var(--mono);text-transform:uppercase">Detalhe</th>
+          <th style="padding:7px 10px;text-align:right;font-size:9px;color:var(--tx3);font-family:var(--mono);text-transform:uppercase">Valor</th>
+          <th style="padding:7px 10px;font-size:9px;color:var(--tx3);font-family:var(--mono);text-transform:uppercase">Status</th>
+        </tr></thead>
+        <tbody>${rows}</tbody>
+      </table>
+    </div>`;
+  document.getElementById('overlay').classList.add('open');
+}
+
+function abrirDetalheRow(id) {
+  const l = lancamentos.find(x=>x.id===id);
+  if (!l) return;
+  abrirDetalheConta(l.grupo, l.conta);
+}
+
+// ═══════════════════════════════════════════════════════
+// CONFIRMAR EXCLUSÃO
+// ═══════════════════════════════════════════════════════
+function abrirConfirm(id) {
+  deleteId = id;
+  const l = lancamentos.find(x=>x.id===id);
+  document.getElementById('popup-content').innerHTML = `
+    <div class="confirm-pop">
+      <div class="conf-ico">⚠</div>
+      <div style="font-size:14px;font-weight:700;color:var(--tx);margin-bottom:6px">Excluir lançamento?</div>
+      <div class="conf-msg">${l.conta} — ${l.detalhe||''}<br><strong>${fmtR(l.valor)}</strong> · ${l.mes}</div>
+      <div style="display:flex;gap:8px;justify-content:center">
+        <button class="pbtn-c" style="flex:1" onclick="fecharPopup()">Cancelar</button>
+        <button class="pbtn-del" onclick="excluir()">Excluir do Sheets</button>
+      </div>
+    </div>`;
+  document.getElementById('overlay').classList.add('open');
+}
+
+async function excluir() {
+  if (!deleteId) return;
+  try {
+    await api({ acao:'excluir', id:deleteId });
+    toast('Excluído do Sheets ✓', 'ok');
+    fecharPopup();
+    await carregarLancamentos();
+  } catch(e) {
+    toast('Erro ao excluir: ' + e.message, 'err');
+  }
+  deleteId = null;
+}
+
+// ═══════════════════════════════════════════════════════
+// GERAÇÃO DE RELATÓRIO PDF ANALÍTICO
+// ═══════════════════════════════════════════════════════
+function gerarRelatorioPDF() {
+  if (!lancamentos.length) { toast('Nenhum dado carregado para o relatório', 'err'); return; }
+
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+  const ano  = document.getElementById('anoSel').value;
+  const meses = mesSel ? [mesSel] : getMesesAtivos();
+  const periodoLabel = mesSel ? mesSel : (meses.length > 1 ? meses[0].slice(0,3) + ' — ' + meses[meses.length-1].slice(0,3) + ' ' + ano : ano);
+  const gRec = gruposRec(), gDep = gruposDep();
+
+  const C = {
+    bkg  : [240, 242, 248],
+    acc  : [99,  102, 241],
+    acc2 : [79,  70,  229],
+    grn  : [29,  184, 106],
+    red  : [240, 82,  82 ],
+    amb  : [245, 158, 11 ],
+    tx   : [26,  32,  64 ],
+    tx2  : [90,  101, 133],
+    tx3  : [155, 163, 191],
+    white: [255, 255, 255],
+    line : [221, 225, 239],
+  };
+
+  const W = 210, ML = 14, MR = 14, CW = W - ML - MR;
+  let y = 0;
+
+  // ── CABEÇALHO ──────────────────────────────────────
+  doc.setFillColor(...C.acc);
+  doc.rect(0, 0, W, 38, 'F');
+  doc.setFillColor(...C.acc2);
+  doc.roundedRect(ML, 8, 18, 18, 3, 3, 'F');
+  doc.setTextColor(...C.white);
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(10);
+  doc.text('CA', ML + 9, 19, { align: 'center' });
+  doc.setFontSize(15);
+  doc.text('Controle ADM — Ed. André Candido II', ML + 22, 15);
+  doc.setFontSize(8.5);
+  doc.setFont('helvetica', 'normal');
+  doc.text('Relatório Analítico de Resultado · Período: ' + periodoLabel, ML + 22, 22);
+  doc.setFontSize(7.5);
+  doc.setTextColor(200, 200, 240);
+  const now = new Date();
+  doc.text('Emitido em ' + now.toLocaleDateString('pt-BR') + ' às ' + now.toLocaleTimeString('pt-BR', {hour:'2-digit',minute:'2-digit'}), W - MR, 33, { align: 'right' });
+  y = 46;
+
+  // ── CALCULAR TOTAIS ─────────────────────────────────
+  let totRec = 0, totDep = 0;
+  meses.forEach(m => {
+    gRec.forEach(g => totRec += getVal(g, null, m));
+    gDep.forEach(g => totDep += getVal(g, null, m));
+  });
+  const saldoGeral  = totRec - totDep;
+  const aPagarTotal = lancamentos.filter(l => l.status === 'A PAGAR').reduce((a,l) => a+l.valor, 0);
+
+  // ── 4 KPI CARDS ────────────────────────────────────
+  const kpis = [
+    { lbl:'RECEITAS TOTAIS',  val: fmtR(totRec),     cor: C.grn },
+    { lbl:'DESPESAS TOTAIS',  val: fmtR(totDep),     cor: C.red },
+    { lbl:'SALDO DO PERÍODO', val: fmtS(saldoGeral), cor: saldoGeral >= 0 ? C.grn : C.red },
+    { lbl:'A PAGAR',          val: fmtR(aPagarTotal),cor: C.amb },
+  ];
+  const kW = (CW - 9) / 4;
+  kpis.forEach((k, i) => {
+    const x = ML + i * (kW + 3);
+    doc.setFillColor(...C.white);
+    doc.roundedRect(x, y, kW, 22, 2, 2, 'F');
+    doc.setDrawColor(...C.line);
+    doc.setLineWidth(0.3);
+    doc.roundedRect(x, y, kW, 22, 2, 2, 'S');
+    doc.setFillColor(...k.cor);
+    doc.rect(x, y, kW, 1.5, 'F');
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(6);
+    doc.setTextColor(...C.tx3);
+    doc.text(k.lbl, x + kW/2, y + 7, { align:'center' });
+    doc.setFontSize(9.5);
+    doc.setTextColor(...k.cor);
+    doc.text(k.val, x + kW/2, y + 15, { align:'center' });
+  });
+  y += 30;
+
+  // ── HELPERS ────────────────────────────────────────
+  const sectionTitle = (titulo, yy) => {
+    doc.setFillColor(...C.acc);
+    doc.rect(ML, yy, CW, 7, 'F');
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(8);
+    doc.setTextColor(...C.white);
+    doc.text(titulo, ML + 4, yy + 5);
+    return yy + 10;
+  };
+  const checkPage = (needed) => {
+    if (y + needed > 280) { doc.addPage(); y = 14; }
+  };
+
+  // ── RECEITAS — somente valor por grupo ─────────────
+  checkPage(14);
+  y = sectionTitle('RECEITAS', y);
+  const recRows = gRec.map(g => {
+    const tot = meses.reduce((a,m) => a + getVal(g, null, m), 0);
+    return [g, fmtR(tot)];
+  });
+  recRows.push(['TOTAL RECEITAS', fmtR(totRec)]);
+  doc.autoTable({
+    startY: y,
+    body: recRows,
+    margin: { left: ML, right: MR },
+    styles: { fontSize: 8, cellPadding: 3, font: 'helvetica' },
+    columnStyles: {
+      0: { cellWidth: CW - 50, textColor: C.tx, fontStyle: 'normal' },
+      1: { cellWidth: 50, halign: 'right', textColor: C.grn, fontStyle: 'bold' },
+    },
+    didParseCell: (data) => {
+      if (data.row.index === recRows.length - 1) {
+        data.cell.styles.fillColor = [230, 248, 239];
+        data.cell.styles.fontStyle = 'bold';
+        data.cell.styles.textColor = data.column.index === 1 ? C.grn : C.tx;
+      } else {
+        data.cell.styles.fillColor = data.row.index % 2 === 0 ? C.white : C.bkg;
+      }
+    },
+    tableWidth: CW,
+  });
+  y = doc.lastAutoTable.finalY + 8;
+
+  // ── DESPESAS — somente valor por grupo ─────────────
+  checkPage(14);
+  y = sectionTitle('DESPESAS', y);
+  const depRows = gDep.map(g => {
+    const tot = meses.reduce((a,m) => a + getVal(g, null, m), 0);
+    const isVar = /vari[aá]/i.test(g);
+    return [g + (isVar ? ' (Variável)' : ' (Fixa)'), fmtR(tot)];
+  });
+  depRows.push(['TOTAL DESPESAS', fmtR(totDep)]);
+  doc.autoTable({
+    startY: y,
+    body: depRows,
+    margin: { left: ML, right: MR },
+    styles: { fontSize: 8, cellPadding: 3, font: 'helvetica' },
+    columnStyles: {
+      0: { cellWidth: CW - 50, textColor: C.tx, fontStyle: 'normal' },
+      1: { cellWidth: 50, halign: 'right', textColor: C.red, fontStyle: 'bold' },
+    },
+    didParseCell: (data) => {
+      if (data.row.index === depRows.length - 1) {
+        data.cell.styles.fillColor = [255, 240, 240];
+        data.cell.styles.fontStyle = 'bold';
+        data.cell.styles.textColor = data.column.index === 1 ? C.red : C.tx;
+      } else {
+        data.cell.styles.fillColor = data.row.index % 2 === 0 ? C.white : C.bkg;
+      }
+    },
+    tableWidth: CW,
+  });
+  y = doc.lastAutoTable.finalY + 8;
+
+  // ── DRE MENSAL (só quando múltiplos meses) ─────────
+  if (meses.length > 1) {
+    checkPage(20);
+    y = sectionTitle('DRE MENSAL — EVOLUÇÃO POR MÊS', y);
+    const dreRows = [];
+    gRec.forEach(g => {
+      const row = [g];
+      meses.forEach(m => row.push(fmtR(getVal(g, null, m))));
+      row.push(fmtR(meses.reduce((a,m) => a + getVal(g,null,m), 0)));
+      dreRows.push(row);
+    });
+    dreRows.push(['TOTAL RECEITAS', ...meses.map(m => fmtR(gRec.reduce((a,g) => a+getVal(g,null,m),0))), fmtR(totRec)]);
+    gDep.forEach(g => {
+      const row = [g];
+      meses.forEach(m => row.push(fmtR(getVal(g, null, m))));
+      row.push(fmtR(meses.reduce((a,m) => a + getVal(g,null,m), 0)));
+      dreRows.push(row);
+    });
+    dreRows.push(['TOTAL DESPESAS', ...meses.map(m => fmtR(gDep.reduce((a,g) => a+getVal(g,null,m),0))), fmtR(totDep)]);
+    const saldoRow = ['SALDO LÍQUIDO'];
+    meses.forEach(m => {
+      const r = gRec.reduce((a,g) => a+getVal(g,null,m),0);
+      const d = gDep.reduce((a,g) => a+getVal(g,null,m),0);
+      saldoRow.push(fmtS(r-d));
+    });
+    saldoRow.push(fmtS(saldoGeral));
+    dreRows.push(saldoRow);
+
+    const isTotRec  = (i) => i === gRec.length;
+    const isTotDep  = (i) => i === gRec.length + 1 + gDep.length;
+    const isSaldo   = (i) => i === dreRows.length - 1;
+
+    doc.autoTable({
+      startY: y,
+      head: [['Grupo', ...meses.map(m => m.slice(0,3)), 'TOTAL']],
+      body: dreRows,
+      margin: { left: ML, right: MR },
+      styles: { fontSize: 6.5, cellPadding: 2.2, textColor: C.tx2, font: 'helvetica', overflow: 'ellipsize' },
+      headStyles: { fillColor: C.acc, textColor: C.white, fontStyle: 'bold', halign: 'left' },
+      columnStyles: { 0: { halign: 'left', textColor: C.tx } },
+      didParseCell: (data) => {
+        if (data.section !== 'body') return;
+        const i = data.row.index;
+        const isRight = data.column.index > 0;
+        if (isSaldo(i)) {
+          data.cell.styles.fillColor = [248, 250, 255];
+          data.cell.styles.fontStyle = 'bold';
+          data.cell.styles.textColor = isRight ? (saldoGeral >= 0 ? C.grn : C.red) : C.tx;
+        } else if (isTotRec(i)) {
+          data.cell.styles.fillColor = [230, 248, 239];
+          data.cell.styles.fontStyle = 'bold';
+          data.cell.styles.textColor = isRight ? C.grn : C.tx;
+        } else if (isTotDep(i)) {
+          data.cell.styles.fillColor = [255, 240, 240];
+          data.cell.styles.fontStyle = 'bold';
+          data.cell.styles.textColor = isRight ? C.red : C.tx;
+        }
+      },
+      tableWidth: CW,
+    });
+    y = doc.lastAutoTable.finalY + 8;
+  }
+
+  // ── PENDÊNCIAS A PAGAR — top 15 ────────────────────
+  const pendentes = lancamentos.filter(l => l.status === 'A PAGAR')
+    .sort((a,b) => b.valor - a.valor).slice(0, 15);
+  if (pendentes.length) {
+    checkPage(20);
+    y = sectionTitle('PENDÊNCIAS — A PAGAR (TOP ' + pendentes.length + ')', y);
+    doc.autoTable({
+      startY: y,
+      head: [['Mês', 'Grupo', 'Conta', 'Detalhe', 'Valor']],
+      body: pendentes.map(l => [l.mes.slice(0,3), l.grupo, l.conta, l.detalhe || '—', fmtR(l.valor)]),
+      margin: { left: ML, right: MR },
+      styles: { fontSize: 7, cellPadding: 2.2, textColor: C.tx2 },
+      headStyles: { fillColor: [255, 251, 235], textColor: C.amb, fontStyle: 'bold', fontSize: 6.5 },
+      columnStyles: {
+        0: { cellWidth: 16, halign:'center' },
+        1: { cellWidth: 42 },
+        2: { cellWidth: 42 },
+        3: { cellWidth: 52 },
+        4: { cellWidth: 30, halign:'right', textColor: C.amb, fontStyle:'bold' },
+      },
+      tableWidth: CW,
+    });
+  }
+
+  // ── RODAPÉ EM TODAS AS PÁGINAS ──────────────────────
+  const totalPages = doc.getNumberOfPages();
+  for (let p = 1; p <= totalPages; p++) {
+    doc.setPage(p);
+    doc.setDrawColor(...C.line);
+    doc.setLineWidth(0.3);
+    doc.line(ML, 288, W - MR, 288);
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(6.5);
+    doc.setTextColor(...C.tx3);
+    doc.text('Controle ADM — Ed. André Candido II  ·  Gerado pelo sistema interno', ML, 293);
+    doc.text('Pág. ' + p + ' / ' + totalPages, W - MR, 293, { align:'right' });
+  }
+
+  // ── SALVAR ──────────────────────────────────────────
+  const nomeArq = `Relatorio_AnaliticoADM_${periodoLabel.replace(/\s/g,'_')}_${ano}.pdf`;
+  doc.save(nomeArq);
+  toast('PDF gerado com sucesso ✓', 'ok');
+}
+
+
+let _tT;
+function toast(msg, tipo) {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.className = 'toast show ' + (tipo||'info');
+  clearTimeout(_tT);
+  _tT = setTimeout(()=>{ el.className='toast'; }, 3500);
+}
+</script>
+</body>
+</html>
